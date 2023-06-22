@@ -48,7 +48,7 @@ function App() {
 
   return (
     <div>
-      <button onClick={handleOpenSubtitleCreator}>{handleOpenSubtitleCreator ? 'Create Subtitles' : 'Process Subtitles'}</button>
+      <button onClick={handleOpenSubtitleCreator}>{showSubtitleCreator ? 'Create Subtitles' : 'Process Subtitles'}</button>
       <div style={{ display: showSubtitleCreator ? "none" : "block" }}>
         <h1>Subtitle File Processor</h1>
         <input type="file" onChange={handleFileChange} />
