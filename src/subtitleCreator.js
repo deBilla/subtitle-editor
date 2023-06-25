@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import WebVTT from "node-webvtt";
 import DateTime from "react-datetime";
 import "react-datetime/css/react-datetime.css";
+import "./SubtitleCreator.css";
 import moment from "moment";
 
 function SubtitleCreator() {
@@ -84,28 +85,28 @@ function SubtitleCreator() {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>Subtitle Creator</h1>
-      <div style={{ display: "flex" }}>
-        <label style={{ marginRight: "5px" }}>Start Time: </label>
-        <DateTime
-          value={startTime}
-          onChange={handleStartTimeChange}
-          dateFormat={false}
-          timeFormat="HH:mm:ss"
-        />
-        <label style={{ marginRight: "5px", marginLeft: "5px" }}>
-          End Time:{" "}
-        </label>
-        <DateTime
-          value={endTime}
-          onChange={handleEndTimeChange}
-          dateFormat={false}
-          timeFormat="HH:mm:ss"
-        />
-        <label style={{ marginRight: "5px", marginLeft: "5px" }}>
-          Subtitles:{" "}
-        </label>
+      <div className="subtitle-input">
+        <div className="time-input">
+          <label>Start Time:</label>
+          <DateTime
+            value={startTime}
+            onChange={handleStartTimeChange}
+            dateFormat={false}
+            timeFormat="HH:mm:ss"
+          />
+        </div>
+        <div className="time-input">
+          <label>End Time:</label>
+          <DateTime
+            value={endTime}
+            onChange={handleEndTimeChange}
+            dateFormat={false}
+            timeFormat="HH:mm:ss"
+          />
+        </div>
+        <label>Subtitles:</label>
         <textarea
           rows={4}
           cols={30}
@@ -115,20 +116,19 @@ function SubtitleCreator() {
         />
         <button onClick={handleAddSubtitle}>Add Subtitle</button>
       </div>
-      <div>
+      <div className="subtitle-list">
         <h2>Subtitles:</h2>
         {subtitles.map((subtitle, index) => (
-          <div key={index}>
-            <p>{`[${convertSecondsToTime(
-              subtitle.startTime
-            )} - ${convertSecondsToTime(subtitle.endTime)}]: ${
-              subtitle.text
-            }`}</p>
+          <div className="subtitle-item" key={index}>
+            <p>
+              [{convertSecondsToTime(subtitle.startTime)} -{" "}
+              {convertSecondsToTime(subtitle.endTime)}]: {subtitle.text}
+            </p>
           </div>
         ))}
       </div>
       {subtitles.length > 0 && (
-        <div>
+        <div className="generate-button">
           <button onClick={handleGenerateSubtitleFile}>
             Generate Subtitle File
           </button>

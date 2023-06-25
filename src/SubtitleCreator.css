@@ -1,0 +1,80 @@
+/* SubtitleCreator.css */
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.subtitle-input {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.subtitle-input label {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.subtitle-input .time-input {
+    display: flex;
+    align-items: center;
+}
+
+.subtitle-input .time-input label {
+    margin-right: 5px;
+}
+
+.subtitle-input textarea {
+    width: 300px;
+    height: 100px;
+    resize: vertical;
+}
+
+.subtitle-input button {
+    margin-left: 10px;
+    padding: 8px 12px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.subtitle-list {
+    margin-top: 20px;
+}
+
+.subtitle-item {
+    margin-bottom: 10px;
+}
+
+.subtitle-item p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+.subtitle-item p:first-child {
+    font-weight: bold;
+}
+
+.generate-button {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.generate-button button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

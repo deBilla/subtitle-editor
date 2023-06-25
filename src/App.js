@@ -47,7 +47,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="container">
       <button onClick={handleOpenSubtitleCreator}>{!showSubtitleCreator ? 'Create Subtitles' : 'Process Subtitles'}</button>
       <div style={{ display: showSubtitleCreator ? "none" : "block" }}>
         <h1>Subtitle File Processor</h1>
