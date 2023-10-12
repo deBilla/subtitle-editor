@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import WebVTT from "node-webvtt";
 import SubtitleCreator from "./subtitleCreator";
 import srtParser2 from "srt-parser-2";
@@ -26,39 +26,33 @@ function App() {
     setShowSubtitleCreator(!showSubtitleCreator);
   };
 
-  const handleFileUploadForRemovingFirst11Subs = () => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const subtitleData = reader.result;
-        const parsedSubtitle = WebVTT.parse(subtitleData);
+  const processAndDownload = () => {
+    const cues = [];
 
-        // removing first 11 subs
-        let cueArr = parsedSubtitle.cues.slice(11);
-
-        for (let i = 0; i < cueArr.length; i++) {
-          cueArr[i]["identifier"] = (i + 1).toString();
-        }
-
-        parsedSubtitle.cues = cueArr;
-
-        const modifiedSubtitleContent = WebVTT.compile(parsedSubtitle);
-        const modifiedSubtitleBlob = new Blob([modifiedSubtitleContent], {
-          type: "text/vtt",
-        });
-        const downloadLink = URL.createObjectURL(modifiedSubtitleBlob);
-        const a = document.createElement("a");
-        a.href = downloadLink;
-
-        const originalFilename = file.name;
-
-        a.download = `modified_${originalFilename}`;
-        a.click();
-
-        setSubtitles(cueArr);
-      };
-      reader.readAsText(file);
+    for (let i = 0; i < subtitles.length; i++) {
+      cues.push({
+        identifier: i + 1,
+        start: subtitles[i].startSeconds,
+        end: subtitles[i].endSeconds,
+        text: subtitles[i].text,
+        styles: "",
+      });
     }
+
+    const parsedSubtitle = { cues: cues, valid: true };
+    const modifiedSubtitleContent = WebVTT.compile(parsedSubtitle);
+    const modifiedSubtitleBlob = new Blob([modifiedSubtitleContent], {
+      type: "text/vtt",
+    });
+    const downloadLink = URL.createObjectURL(modifiedSubtitleBlob);
+    const a = document.createElement("a");
+    a.href = downloadLink;
+
+    const originalFilename = file.name;
+    const fileName = `${originalFilename?.split(".")[0]}.vtt`;
+
+    a.download = `modified_${fileName}`;
+    a.click();
   };
 
   const handleFileUpload = () => {
@@ -68,47 +62,27 @@ function App() {
       reader.onload = () => {
         const subtitleData = reader.result;
         const srt_array = parser.fromSrt(subtitleData);
-        const cues = [];
-
-        for (let i = 0; i < srt_array.length; i++) {
-          cues.push({
-            identifier: (i+1),
-            start: srt_array[i].startSeconds,
-            end: srt_array[i].endSeconds,
-            text: srt_array[i].text,
-            styles:""
-          })
-        }
-
-        const parsedSubtitle = {cues: cues, valid:true};
-
-        setSubtitles(cues);
-
-        const modifiedSubtitleContent = WebVTT.compile(parsedSubtitle);
-        const modifiedSubtitleBlob = new Blob([modifiedSubtitleContent], {
-          type: "text/vtt",
-        });
-        const downloadLink = URL.createObjectURL(modifiedSubtitleBlob);
-        const a = document.createElement("a");
-        a.href = downloadLink;
-
-        const originalFilename = file.name;
-        const fileName = `${originalFilename?.split('.')[0]}.vtt`;
-
-        a.download = `modified_${fileName}`;
-        a.click();
+        setSubtitles(srt_array);
       };
       reader.readAsText(file);
     }
   };
 
+  useEffect(() => {
+    if (file) {
+      handleFileUpload();
+    }
+  }, [file]);
+
   return (
     <div className="container">
-      <button onClick={handleOpenSubtitleCreator}>{!showSubtitleCreator ? 'Create Subtitles' : 'Process Subtitles'}</button>
+      <button onClick={handleOpenSubtitleCreator}>
+        {!showSubtitleCreator ? "Create Subtitles" : "Process Subtitles"}
+      </button>
       <div style={{ display: showSubtitleCreator ? "none" : "block" }}>
         <h1>Subtitle File Processor</h1>
         <input type="file" onChange={handleFileChange} />
-        <button onClick={handleFileUpload}>Process and Download</button>
+        <button onClick={processAndDownload}>Process and Download</button>
         {subtitles.map((subtitle) => (
           <SubtitleItem
             key={subtitle.identifier}
