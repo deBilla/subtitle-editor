@@ -76,11 +76,11 @@ function App() {
 
   return (
     <div className="container">
-      <button onClick={handleOpenSubtitleCreator}>
+      {/* <button onClick={handleOpenSubtitleCreator}>
         {!showSubtitleCreator ? "Create Subtitles" : "Process Subtitles"}
-      </button>
+      </button> */}
       <div style={{ display: showSubtitleCreator ? "none" : "block" }}>
-        <h1>Subtitle File Processor</h1>
+        <h1>SRT To VVT Converter</h1>
         <input type="file" onChange={handleFileChange} />
         <button onClick={processAndDownload}>Process and Download</button>
         {subtitles.map((subtitle) => (
@@ -91,10 +91,10 @@ function App() {
           />
         ))}
       </div>
-      <div style={{ display: showSubtitleCreator ? "block" : "none" }}>
+      {/* <div style={{ display: showSubtitleCreator ? "block" : "none" }}>
         <h1>Subtitle App</h1>
         <SubtitleCreator />
-      </div>
+      </div> */}
     </div>
   );
 }
