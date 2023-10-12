@@ -2,8 +2,18 @@ import React, { useState } from "react";
 import WebVTT from "node-webvtt";
 import SubtitleCreator from "./subtitleCreator";
 
+function SubtitleItem({ subtitle, onDelete }) {
+  return (
+    <div>
+      <textarea value={subtitle.text} readOnly />
+      <button onClick={() => onDelete(subtitle)}>Delete</button>
+    </div>
+  );
+}
+
 function App() {
   const [file, setFile] = useState(null);
+  const [subtitles, setSubtitles] = useState([]);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -41,6 +51,8 @@ function App() {
 
         a.download = `modified_${originalFilename}`;
         a.click();
+
+        setSubtitles(cueArr);
       };
       reader.readAsText(file);
     }
@@ -53,6 +65,13 @@ function App() {
         <h1>Subtitle File Processor</h1>
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleFileUpload}>Process and Download</button>
+        {subtitles.map((subtitle) => (
+          <SubtitleItem
+            key={subtitle.identifier}
+            subtitle={subtitle}
+            onDelete={() => {}}
+          />
+        ))}
       </div>
       <div style={{ display: showSubtitleCreator ? "block" : "none" }}>
         <h1>Subtitle App</h1>
