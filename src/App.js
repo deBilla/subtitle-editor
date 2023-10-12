@@ -31,7 +31,7 @@ function App() {
 
     for (let i = 0; i < subtitles.length; i++) {
       cues.push({
-        identifier: i + 1,
+        identifier: (i + 1).toString(),
         start: subtitles[i].startSeconds,
         end: subtitles[i].endSeconds,
         text: subtitles[i].text,
