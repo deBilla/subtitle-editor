@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import WebVTT from "node-webvtt";
 import SubtitleCreator from "./subtitleCreator";
+import srtParser2 from "srt-parser-2";
 
 function SubtitleItem({ subtitle, onDelete }) {
   return (
@@ -25,19 +26,64 @@ function App() {
     setShowSubtitleCreator(!showSubtitleCreator);
   };
 
+  /** Khairis change */
+  // const handleFileUpload = () => {
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       const subtitleData = reader.result;
+  //       const parsedSubtitle = WebVTT.parse(subtitleData);
+
+  //       // removing first 11 subs
+  //       let cueArr = parsedSubtitle.cues.slice(11);
+
+  //       for (let i = 0; i < cueArr.length; i++) {
+  //         cueArr[i]["identifier"] = (i + 1).toString();
+  //       }
+
+  //       parsedSubtitle.cues = cueArr;
+
+  //       const modifiedSubtitleContent = WebVTT.compile(parsedSubtitle);
+  //       const modifiedSubtitleBlob = new Blob([modifiedSubtitleContent], {
+  //         type: "text/vtt",
+  //       });
+  //       const downloadLink = URL.createObjectURL(modifiedSubtitleBlob);
+  //       const a = document.createElement("a");
+  //       a.href = downloadLink;
+
+  //       const originalFilename = file.name;
+
+  //       a.download = `modified_${originalFilename}`;
+  //       a.click();
+
+  //       setSubtitles(cueArr);
+  //     };
+  //     reader.readAsText(file);
+  //   }
+  // };
+
   const handleFileUpload = () => {
     if (file) {
+      const parser = new srtParser2();
       const reader = new FileReader();
       reader.onload = () => {
         const subtitleData = reader.result;
-        const parsedSubtitle = WebVTT.parse(subtitleData);
-        let cueArr = parsedSubtitle.cues.slice(11);
+        const srt_array = parser.fromSrt(subtitleData);
+        const cues = [];
 
-        for (let i = 0; i < cueArr.length; i++) {
-          cueArr[i]["identifier"] = (i + 1).toString();
+        for (let i = 0; i < srt_array.length; i++) {
+          cues.push({
+            identifier: (i+1),
+            start: srt_array[i].startSeconds,
+            end: srt_array[i].endSeconds,
+            text: srt_array[i].text,
+            styles:""
+          })
         }
 
-        parsedSubtitle.cues = cueArr;
+        const parsedSubtitle = {cues: cues, valid:true};
+
+        setSubtitles(cues);
 
         const modifiedSubtitleContent = WebVTT.compile(parsedSubtitle);
         const modifiedSubtitleBlob = new Blob([modifiedSubtitleContent], {
@@ -48,11 +94,10 @@ function App() {
         a.href = downloadLink;
 
         const originalFilename = file.name;
+        const fileName = `${originalFilename?.split('.')[0]}.vtt`;
 
-        a.download = `modified_${originalFilename}`;
+        a.download = `modified_${fileName}`;
         a.click();
-
-        setSubtitles(cueArr);
       };
       reader.readAsText(file);
     }
