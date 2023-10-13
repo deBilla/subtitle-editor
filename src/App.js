@@ -99,7 +99,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>SRT To VVT Converter</h1>
+      <h1>VVT Converter</h1>
       <div>
         <div style={{display: 'flex', alignItems: 'center'}}>
           <input type="file" onChange={handleFileChange} />
