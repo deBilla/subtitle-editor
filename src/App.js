@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from "react";
 import WebVTT from "node-webvtt";
-import SubtitleCreator from "./subtitleCreator";
 import srtParser2 from "srt-parser-2";
-
-function SubtitleItem({ subtitle, onDelete }) {
-  return (
-    <div>
-      <textarea value={subtitle.text} readOnly />
-      <button onClick={() => onDelete(subtitle)}>Delete</button>
-    </div>
-  );
-}
+import SubtitleItem from "./components/subtitleItem";
+import "./subtitle-creator/SubtitleCreator.css";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -18,12 +10,6 @@ function App() {
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-  };
-
-  const [showSubtitleCreator, setShowSubtitleCreator] = useState(false);
-
-  const handleOpenSubtitleCreator = () => {
-    setShowSubtitleCreator(!showSubtitleCreator);
   };
 
   const processAndDownload = () => {
@@ -55,8 +41,8 @@ function App() {
     a.click();
   };
 
-  const handleFileUpload = () => {
-    if (file) {
+  const handleFileUpload = (srtFile) => {
+    if (srtFile) {
       const parser = new srtParser2();
       const reader = new FileReader();
       reader.onload = () => {
@@ -64,37 +50,38 @@ function App() {
         const srt_array = parser.fromSrt(subtitleData);
         setSubtitles(srt_array);
       };
-      reader.readAsText(file);
+      reader.readAsText(srtFile);
     }
+  };
+
+  const oneDeleteSubtitle = () => {
+    alert("not supported yet");
   };
 
   useEffect(() => {
     if (file) {
-      handleFileUpload();
+      handleFileUpload(file);
     }
   }, [file]);
 
   return (
     <div className="container">
-      {/* <button onClick={handleOpenSubtitleCreator}>
-        {!showSubtitleCreator ? "Create Subtitles" : "Process Subtitles"}
-      </button> */}
-      <div style={{ display: showSubtitleCreator ? "none" : "block" }}>
-        <h1>SRT To VVT Converter</h1>
-        <input type="file" onChange={handleFileChange} />
-        <button onClick={processAndDownload}>Process and Download</button>
+      <h1>SRT To VVT Converter</h1>
+      <div>
+        <div style={{display: 'flex', alignItems: 'center'}}>
+          <input type="file" onChange={handleFileChange} />
+          <button onClick={processAndDownload}>Process and Download</button>
+        </div>
+      </div>
+      <div style={{ marginTop: "10px" }}>
         {subtitles.map((subtitle) => (
           <SubtitleItem
             key={subtitle.identifier}
             subtitle={subtitle}
-            onDelete={() => {}}
+            onDelete={oneDeleteSubtitle}
           />
         ))}
       </div>
-      {/* <div style={{ display: showSubtitleCreator ? "block" : "none" }}>
-        <h1>Subtitle App</h1>
-        <SubtitleCreator />
-      </div> */}
     </div>
   );
 }
