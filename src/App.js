@@ -3,7 +3,7 @@ import WebVTT from "node-webvtt";
 import srtParser2 from "srt-parser-2";
 import SubtitleItem from "./components/subtitleItem";
 import "./subtitle-creator/SubtitleCreator.css";
-import { parseFileVTT } from "./utils/util";
+import { convertSecondsToTime } from "./utils/util";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -55,6 +55,31 @@ function App() {
     }
   };
 
+  const handleFileUploadVTT = (vvtFile) => {
+    if (vvtFile) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const subtitleData = reader.result;
+        const parsedSubtitle = WebVTT.parse(subtitleData);
+        const srt_array = parsedSubtitle.cues;
+        const subs = [];
+
+        for (let i = 0; i < srt_array.length; i++) {
+          subs.push({
+            id: (i + 1),
+            startSeconds: srt_array[i].start,
+            endSeconds: srt_array[i].end,
+            text: srt_array[i].text,
+            startTime: convertSecondsToTime(srt_array[i].start),
+            endTime: convertSecondsToTime(srt_array[i].end),
+          })
+        }
+        setSubtitles(subs);
+      };
+      reader.readAsText(vvtFile);
+    }
+  };
+
   const oneDeleteSubtitle = () => {
     alert("not supported yet");
   };
@@ -67,7 +92,7 @@ function App() {
       if (ext === 'srt') {
         handleFileUpload(file);
       } else {
-        parseFileVTT(file);
+        handleFileUploadVTT(file);
       } 
     }
   }, [file]);
