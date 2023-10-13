@@ -3,6 +3,7 @@ import WebVTT from "node-webvtt";
 import srtParser2 from "srt-parser-2";
 import SubtitleItem from "./components/subtitleItem";
 import "./subtitle-creator/SubtitleCreator.css";
+import { parseFileVTT } from "./utils/util";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -60,7 +61,14 @@ function App() {
 
   useEffect(() => {
     if (file) {
-      handleFileUpload(file);
+      const originalFilename = file.name;
+      const ext = originalFilename?.split(".")[1];
+
+      if (ext === 'srt') {
+        handleFileUpload(file);
+      } else {
+        parseFileVTT(file);
+      } 
     }
   }, [file]);
 
